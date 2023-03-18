@@ -17,9 +17,25 @@ With Appium 2.0, the Appium project has adopted a model a little closer to the W
 
 Another difference is that Selenium doesn't manage web drivers for you. Even if you want to use Selenium, you need to figure out how to download and maintain versions of the drivers that you need. With Appium, however, you get a command line tool as part of the Appium software that lets you manage which drivers you have installed.
 
-On top of this, Appium actually has a bit more robust ecosystem for drivers. Appium itself provides tools for anyone in the world to write their own Appium driver, to connect up automation for an existing or brand new software platform. And this makes sense. The goal of Selenium was to automate web browsers, and now each browser has its own driver maintained by the makers of the browser itself. Appium's goal is a bit broader, namely to bring WebDriver style automation to any platform. There's no way the Appium team can do that on their own, so instead they provide tools that make it easy for any developer to create a WebDriver implementation for a new platform. These new drivers can then easily be installed and shared using Appium's driver interface.
+### Expandable Driver Ecosystem
+<img width="800" src="https://user-images.githubusercontent.com/70295997/226085860-0a0dded1-6798-4e81-9b9d-a4f619e6d9b8.png">
 
-Well, what drivers currently exist for Appium? Later on, we'll talk about ways to get a current list from the Appium software itself. But for now, we can say that there are 8 drivers that the Appium team officially recognizes: 2 for Android, 1 for iOS, and the rest for a variety of other platforms. As the driver ecosystem grows, this number will obviously also increase.
+On top of this, Appium actually has a bit more robust ecosystem for drivers. Appium itself provides tools for anyone in the world to write their own Appium driver, to connect up automation for an existing or brand new software platform. And this makes sense. The goal of Selenium was to automate web browsers, and now each browser has its own driver maintained by the makers of the browser itself. Appium's goal is a bit broader, namely to bring WebDriver style automation to any platform. There's no way the Appium team can do that on their own, so instead they provide tools that make it easy for any developer to create a WebDriver implementation for a new platform. These new custom drivers can then easily be installed and shared using Appium's driver command-line interface.
+
+### Appium Drivers
+
+| Appium Drivers |  |
+| ---- | ---- |
+| iOS | XCUITest Driver |
+| Android | UiAutomator2 Driver |
+| Android | Espresso Driver |
+| Windows | Windows Driver (WinAppDriverl; Microsoft) |
+| macOS | Mac Driver (Appium4Mac) |
+| Tizen | Tizen Driver (Samsung) |
+| Flutter | Flutter Driver |
+| Youi.tv | Youi Driver |
+
+What drivers currently exist for Appium? We'll talk about ways to get a current list from the Appium software itself. But for now, we can say that there are 8 drivers that the Appium team officially recognizes: 2 for Android, 1 for iOS, and the rest for a variety of other platforms. As the driver ecosystem grows, this number will obviously also increase.
 
 1. Let's talk about the iOS driver first. It's called the Appium XCUITest driver, because it is based on the XCUITest automation technology from Apple that we discussed in the unit on mobile automation tools.
 
@@ -37,7 +53,22 @@ Well, what drivers currently exist for Appium? Later on, we'll talk about ways t
 
 8. Finally, as another example of a third-party driver, we have the Youi.tv driver, which makes automation easy for developers using the Youi.tv cross-platform TV app development framework.
 
-In this course, we are obviously focusing on the use of Appium for testing mobile apps, which is far and away the most popular use for Appium. By and large, what you learn here will also be relevant for other platform drivers too! But each driver has its own subset of the WebDriver protocol that it supports, and each driver might additionally support some features which are specific to that platform or which only make sense on that platform. So it's always a good idea to familiarize yourself with the documentation for a particular driver when you begin to use it.
+### Focus on Mobile
+
+| Focus on Mobile |  |
+| ----- | ----- |
+| iOS | XCUITest Driver | 
+| Android | UiAutomator Driver |
+| Android | Espresso Driver |
+
+We are obviously focusing on the use of Appium for testing mobile apps, which is far and away the most popular use for Appium. By and large, what you learn here will also be relevant for other platform drivers too! But each driver has its own subset of the WebDriver protocol that it supports, and each driver might additionally support some features which are specific to that platform or which only make sense on that platform. So it's always a good idea to familiarize yourself with the documentation for a particular driver when you begin to use it.
+
+### Platform Differences
+
+- There are some enormous differences between mobile platform (iOS and Android) - app design, UI frameworks, development methods, tooling, etc.
+- Appium's iOS and Android drivers don't provide *exactly* the same set of features (or *exactly* the same implementations in all cases).
+- The Appium team does try to ensure parity as far as possible.
+- Writing cross-device test code is possible, but not as easy as it is to write cross-browser test code.
 
 In a perfect world, each Appium driver would implement the WebDriver protocol in exactly the same way across all platforms. But unfortunately this is not always possible. The differences between the iOS and Android platforms, for example, are vast, compared to the differences between Safari and Chrome. Safari and Chrome both render webpages according to a certain standard, but there is no standard mobile app language or framework which iOS and Android both support.
 
@@ -47,15 +78,25 @@ Of course, the Appium team works as hard as they can to make sure that the same 
 
 But one consequence of the fact of these differences is that cross-platform test code is not always as easy to write as it is for the web. It's true that you might wind up in a situation where you need to write a bit of test code that does one thing on iOS and a different thing on Android. In those cases, there are ways to structure your code to make it as clean as possible, which we'll discuss later on.
 
+### Picking a Driver When Multiple Are Available
+- Android has two drivers. Which one should you use> UiAutomator2 or Espresso?
+- Evaluate the underlying technologies used by the driver, as well as driver feature set.
+- Currently, the UiAutomator2 driver has a wider feature set.
+
 Currently, there is not more than one supported driver for a given platform, except in the case of Android. So for most platforms, the choice of which driver to use is easy. But what about Android? How do you know whether to use the Espresso driver or the UiAutomator 2 driver? Unfortunately, this choice matters quite a lot, since each driver works differently enough that you can't assume your tests will run without modification on both drivers.
 
 The way to pick a driver is to evaluate the underlying technologies used by the driver, as well as the feature set provided by the driver. Ultimately you will want to stick with a driver for your testsuite for quite some time. In the case of Android, you could think about whether you need to automate apps beyond your own, for example. If so, you probably need to use the UiAutomator 2 driver.
 
 In general, the UiAutomator 2 driver supports more features, though the Espresso driver does come with a few features that the UiAutomator 2 driver does not have, like the ability to target and execute code within your application directly.
 
-Before you start a new project, it's always a good idea to go through the available driver features and understand what the situation is.
+Before you start a new project, it's always a good idea to go through the available driver features and understand what the situation is because you's likely want to stick with your choice for some time.
 
-So, what happens if you find yourself in a position of having written a testsuite using one Appium driver, and now you want to switch drivers for your platform to a newer one, maybe one that's based on newer technology? This happened with iOS in quite a big way some years ago, when Apple deprecated their iOS UIAutomation Javascript API and decided to support only XCUITest. All Appium users had to migrate their driver from the old iOS driver to the new XCUITest driver.
+### Migrating Testsuite Drivers
+- It is sometimes necessary to switch drivers (e.g., Apple's deprecation in favor of XCUITest some years ago).
+- Switching Appium drivers is much easier than rewriting a testsuite in a new framework (because all Appium drivers conform to the same API).
+- Since Appium drivers dtrive to implement the same commands in the same way, usually migration is a matter of small tweaks.
+
+What happens if you find yourself in a position of having written a testsuite using one Appium driver, and now you want to switch drivers for your platform to a newer one, maybe one that's based on newer technology? This happened with iOS in quite a big way some years ago, when Apple deprecated their iOS UIAutomation Javascript API and decided to support only XCUITest. All Appium users had to migrate their driver from the old iOS driver to the new XCUITest driver.
 
 At the end of the day, this was not nearly as big of a headache as if they had written their tests using Apple's tools directly. With Appium, the API stayed stable enough that only a few small changes had to be made. And that is exactly the promise of Appium, that it provides a stable WebDriver compatible API on top of a shifting set of underlying technologies.
 
